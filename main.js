@@ -1,17 +1,6 @@
-// let botaoAdd = document.querySelector('.add-noticia');
-
-// botaoAdd.addEventListener("click", function(){
-    
-// });
-
-// const fileSelector = document.getElementById('file-selector');
-// fileSelector.addEventListener('change', (event) => {
-//   const fileList = event.target.files;
-//   console.log(fileList);
-// });
-
+const imagens = JSON.parse(localStorage.getItem('imagens')) || []
 const form = document.getElementById('novaPostagem');
-// const posts = localStorage.getItem("posts") || []
+
 
 
 form.addEventListener("submit", (evento)=>{
@@ -20,17 +9,18 @@ form.addEventListener("submit", (evento)=>{
     const texto = evento.target.elements['texto'].value
     const imagem = evento.target.elements['imagem'].files[0];
 
+    
+
     const reader = new FileReader();
     reader.onload = function (event) {
       criaPostagem(event.target.result, texto);
     }
+
     reader.readAsDataURL(imagem);
   
     evento.target.reset();
     
-    // criaPostagem(imagem.value, texto.value)
-    // imagem.value = ""
-    // texto.value = ""
+    
     
 } )
 
@@ -41,8 +31,14 @@ function criaPostagem (imagem, texto){
     const novaImagem = document.createElement("img");
     novaImagem.src = imagem;
 
+    const novoBotao = document.createElement("button")
+    novoBotao.classList.add("botao-remove")
+    novoBotao.textContent = "X"
+
     const novoTexto = document.createElement("section");
     novoTexto.innerHTML = texto
+
+    novoTexto.appendChild(novoBotao)
 
     novaDiv.appendChild(novaImagem);
     novaDiv.appendChild(novoTexto);
@@ -51,22 +47,31 @@ function criaPostagem (imagem, texto){
     const postagens = document.getElementById("main")
     postagens.appendChild(novaDiv)
 
+   
+   
     
-    // const postagemAtual = {
-    //     "texto": texto,
-    //     "imagem": imagem
-    // }
 
-    // posts.push(postagemAtual)
+    
 
-    // localStorage.setItem("posts", JSON.stringify(posts))
+    
+ 
+    novoBotao.addEventListener("click", (event) =>{
+        event.preventDefault();
+        novaDiv.remove()
+    })
 
+    const index = imagens.indexOf(imagem)
+    const existsInLocalStorage = index != -1
+     if(existsInLocalStorage){
+        novaDiv.remove()
+        imagens.splice(index, 1)
+        alert("Essa imagem já foi adicionada em alguma postagem. Evite repetições!!")
+     } else {
+        imagens.push(imagem)
+     }
+
+    
+    localStorage.setItem("imagens", JSON.stringify(imagens) )
     
 }
 
-// const botao = document.getElementById('botaoPostar');
-
-// botao.addEventListener('click', (event) => {
-//     event.preventDefault();
-//     alert("olá mundo")
-// })
